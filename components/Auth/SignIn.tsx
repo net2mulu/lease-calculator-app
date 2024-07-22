@@ -37,7 +37,6 @@ const SignIn = (props: SignInProps) => {
       redirect: false,
     });
 
-    console.log(authData);
     if (authData?.error) {
       toast.error("Invalid credentials");
     } else {

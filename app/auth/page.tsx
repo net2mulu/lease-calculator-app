@@ -5,7 +5,6 @@ import Image from "next/image";
 import { AnimatePresence, motion, VariantLabels } from "framer-motion";
 import { useState } from "react";
 import Link from "next/link";
-import { Toaster } from "react-hot-toast";
 
 export default function Auth() {
   const [showSignIn, setShowSignIn] = useState(true);
@@ -39,7 +38,6 @@ export default function Auth() {
 
   return (
     <>
-      <Toaster />
       <div className="min-h-screen flex">
         <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">

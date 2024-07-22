@@ -14,10 +14,43 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  username   String   @unique
-  password   String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id           String        @id @default(cuid())
+  email        String        @unique
+  username     String        @unique
+  password     String
+  leases       Lease[]
+  sharedLeases SharedLease[]
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+}
+
+// Define the enum for lease type
+enum LeaseType {
+  RESIDENTIAL
+  COMMERCIAL
+}
+
+model Lease {
+  id                 String        @id @default(cuid())
+  startDate          DateTime
+  endDate            DateTime
+  monthlyRent        Decimal
+  securityDeposit    Decimal
+  additionalCharges  Decimal
+  annualRentIncrease Decimal
+  leaseType          LeaseType
+  utilitiesIncluded  Boolean
+  maintenanceFees    Decimal
+  latePaymentPenalty Decimal
+  user               User          @relation(fields: [userId], references: [id])
+  userId             String
+  SharedLease        SharedLease[]
+}
+
+model SharedLease {
+  id      String @id @default(cuid())
+  leaseId String
+  userId  String
+  lease   Lease  @relation(fields: [leaseId], references: [id])
+  user    User   @relation(fields: [userId], references: [id])
 }
