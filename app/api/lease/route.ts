@@ -5,7 +5,7 @@ import { authOptions } from "@/lib/auth";
 import db from "@/lib/db";
 import { z } from "zod";
 
-export const leaseSchema = z.object({
+const leaseSchema = z.object({
   startDate: z.date(),
   endDate: z.date(),
   monthlyRent: z.number().positive(),

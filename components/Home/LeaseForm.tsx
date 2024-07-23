@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,6 +43,10 @@ const FormSchema = z.object({
     .transform((val) => parseFloat(val)),
   latePaymentPenalty: z.number(),
 });
+
+function SearchBarFallback() {
+  return <>Not Found</>;
+}
 
 const LeaseForm = ({
   setLeaseInfo,
@@ -217,282 +221,284 @@ const LeaseForm = ({
   }, [lease]);
 
   return (
-    <div className="py-10 px-6 sm:px-10 lg:col-span-2 xl:p-12">
-      <h3 className="text-lg font-medium text-gray-900">
-        {id ? "Update Lease" : "Create Lease"}
-      </h3>
-      <form
-        onSubmit={id ? handleSubmit(updateLease) : handleSubmit(handleLease)}
-        className="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8"
-      >
-        <div>
-          <label
-            htmlFor="start-date"
-            className="block text-sm font-medium text-gray-900"
-          >
-            Start Date
-          </label>
-          <div className="mt-1">
-            <input
-              disabled={isPending || mode ? true : false}
-              type="date"
-              {...register("startDate")}
-              id="start-date"
-              className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
-            />
-            {errors.startDate && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.startDate.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="end-date"
-            className="block text-sm font-medium text-gray-900"
-          >
-            End Date
-          </label>
-          <div className="mt-1">
-            <input
-              disabled={isPending || mode ? true : false}
-              type="date"
-              {...register("endDate")}
-              id="end-date"
-              className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
-            />
-            {errors.endDate && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.endDate.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="monthly"
-            className="block text-sm font-medium text-gray-900"
-          >
-            Monthly rent amount
-          </label>
-          <div className="mt-1">
-            <input
-              disabled={isPending || mode ? true : false}
-              type="number"
-              min={0}
-              {...register("monthlyRent")}
-              id="monthly"
-              className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
-            />
-            {errors.monthlyRent && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.monthlyRent.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="security-deposit"
-            className="block text-sm font-medium text-gray-900"
-          >
-            Security Deposit
-          </label>
-          <div className="mt-1">
-            <input
-              disabled={isPending || mode ? true : false}
-              type="number"
-              min={0}
-              {...register("securityDeposit")}
-              id="security-deposit"
-              className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
-            />
-            {errors.securityDeposit && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.securityDeposit.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="additional-charges"
-            className="block text-sm font-medium text-gray-900"
-          >
-            Additional Charges
-          </label>
-          <div className="mt-1">
-            <input
-              disabled={isPending || mode ? true : false}
-              type="number"
-              min={0}
-              {...register("additionalCharges")}
-              id="additional-charges"
-              className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
-            />
-            {errors.additionalCharges && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.additionalCharges.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="annual-rent-increase"
-            className="block text-sm font-medium text-gray-900"
-          >
-            Annual Rent Increase
-          </label>
-          <div className="mt-1">
-            <input
-              disabled={isPending || mode ? true : false}
-              type="number"
-              min={0}
-              {...register("annualRentIncrease")}
-              id="annual-rent-increase"
-              className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
-            />
-            {errors.annualRentIncrease && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.annualRentIncrease.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="lease-type"
-            className="block text-sm font-medium text-gray-900"
-          >
-            Lease Type
-          </label>
-          <div className="mt-1">
-            <select
-              {...register("leaseType")}
-              id="lease-type"
-              className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+    <Suspense fallback={<SearchBarFallback />}>
+      <div className="py-10 px-6 sm:px-10 lg:col-span-2 xl:p-12">
+        <h3 className="text-lg font-medium text-gray-900">
+          {id ? "Update Lease" : "Create Lease"}
+        </h3>
+        <form
+          onSubmit={id ? handleSubmit(updateLease) : handleSubmit(handleLease)}
+          className="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8"
+        >
+          <div>
+            <label
+              htmlFor="start-date"
+              className="block text-sm font-medium text-gray-900"
             >
-              <option value="RESIDENTIAL">Residential</option>
-              <option value="COMMERCIAL">Commercial</option>
-            </select>
-            {errors.leaseType && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.leaseType.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="utilities-included"
-            className="block text-sm font-medium text-gray-900"
-          >
-            Utilities Included
-          </label>
-          <div className="mt-1">
-            <input
-              disabled={isPending || mode ? true : false}
-              type="checkbox"
-              {...register("utilitiesIncluded")}
-              id="utilities-included"
-              className="py-3 px-4 shadow-sm text-purple-600 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
-            />
-            {errors.utilitiesIncluded && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.utilitiesIncluded.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="maintenance-fees"
-            className="block text-sm font-medium text-gray-900"
-          >
-            Maintenance Fees
-          </label>
-          <div className="mt-1">
-            <input
-              disabled={isPending || mode ? true : false}
-              type="number"
-              min={0}
-              {...register("maintenanceFees")}
-              id="maintenance-fees"
-              className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
-            />
-            {errors.maintenanceFees && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.maintenanceFees.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="late-payment-penalty"
-            className="block text-sm font-medium text-gray-900"
-          >
-            Late Payment Penalty
-          </label>
-          <div className="mt-1">
-            <input
-              disabled
-              type="number"
-              min={0}
-              {...register("latePaymentPenalty")}
-              id="late-payment-penalty"
-              className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
-            />
-            {errors.latePaymentPenalty && (
-              <p className="mt-2 text-sm text-red-600">
-                {errors.latePaymentPenalty.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {!mode && (
-          <div className="sm:col-span-2 sm:flex sm:justify-end">
-            {id ? (
-              <button
+              Start Date
+            </label>
+            <div className="mt-1">
+              <input
                 disabled={isPending || mode ? true : false}
-                type="submit"
-                className={`mt-2 w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
-                  isPending
-                    ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
-                    : "bg-purple-600 hover:bg-purple-700"
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:w-auto`}
-              >
-                {isPending ? " Updating..." : "Update"}
-              </button>
-            ) : (
-              <button
-                disabled={isPending || mode ? true : false}
-                type="submit"
-                className={`mt-2 w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
-                  isPending
-                    ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
-                    : "bg-purple-600 hover:bg-purple-700"
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:w-auto`}
-              >
-                {isPending ? "Saving..." : "Save"}
-              </button>
-            )}
+                type="date"
+                {...register("startDate")}
+                id="start-date"
+                className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+              />
+              {errors.startDate && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.startDate.message}
+                </p>
+              )}
+            </div>
           </div>
-        )}
-      </form>
-    </div>
+
+          <div>
+            <label
+              htmlFor="end-date"
+              className="block text-sm font-medium text-gray-900"
+            >
+              End Date
+            </label>
+            <div className="mt-1">
+              <input
+                disabled={isPending || mode ? true : false}
+                type="date"
+                {...register("endDate")}
+                id="end-date"
+                className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+              />
+              {errors.endDate && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.endDate.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="monthly"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Monthly rent amount
+            </label>
+            <div className="mt-1">
+              <input
+                disabled={isPending || mode ? true : false}
+                type="number"
+                min={0}
+                {...register("monthlyRent")}
+                id="monthly"
+                className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+              />
+              {errors.monthlyRent && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.monthlyRent.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="security-deposit"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Security Deposit
+            </label>
+            <div className="mt-1">
+              <input
+                disabled={isPending || mode ? true : false}
+                type="number"
+                min={0}
+                {...register("securityDeposit")}
+                id="security-deposit"
+                className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+              />
+              {errors.securityDeposit && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.securityDeposit.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="additional-charges"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Additional Charges
+            </label>
+            <div className="mt-1">
+              <input
+                disabled={isPending || mode ? true : false}
+                type="number"
+                min={0}
+                {...register("additionalCharges")}
+                id="additional-charges"
+                className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+              />
+              {errors.additionalCharges && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.additionalCharges.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="annual-rent-increase"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Annual Rent Increase
+            </label>
+            <div className="mt-1">
+              <input
+                disabled={isPending || mode ? true : false}
+                type="number"
+                min={0}
+                {...register("annualRentIncrease")}
+                id="annual-rent-increase"
+                className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+              />
+              {errors.annualRentIncrease && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.annualRentIncrease.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="lease-type"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Lease Type
+            </label>
+            <div className="mt-1">
+              <select
+                {...register("leaseType")}
+                id="lease-type"
+                className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+              >
+                <option value="RESIDENTIAL">Residential</option>
+                <option value="COMMERCIAL">Commercial</option>
+              </select>
+              {errors.leaseType && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.leaseType.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="utilities-included"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Utilities Included
+            </label>
+            <div className="mt-1">
+              <input
+                disabled={isPending || mode ? true : false}
+                type="checkbox"
+                {...register("utilitiesIncluded")}
+                id="utilities-included"
+                className="py-3 px-4 shadow-sm text-purple-600 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+              />
+              {errors.utilitiesIncluded && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.utilitiesIncluded.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="maintenance-fees"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Maintenance Fees
+            </label>
+            <div className="mt-1">
+              <input
+                disabled={isPending || mode ? true : false}
+                type="number"
+                min={0}
+                {...register("maintenanceFees")}
+                id="maintenance-fees"
+                className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+              />
+              {errors.maintenanceFees && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.maintenanceFees.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="late-payment-penalty"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Late Payment Penalty
+            </label>
+            <div className="mt-1">
+              <input
+                disabled
+                type="number"
+                min={0}
+                {...register("latePaymentPenalty")}
+                id="late-payment-penalty"
+                className="py-3 px-4 block w-full shadow-sm text-gray-900 focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"
+              />
+              {errors.latePaymentPenalty && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.latePaymentPenalty.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {!mode && (
+            <div className="sm:col-span-2 sm:flex sm:justify-end">
+              {id ? (
+                <button
+                  disabled={isPending || mode ? true : false}
+                  type="submit"
+                  className={`mt-2 w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
+                    isPending
+                      ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
+                      : "bg-purple-600 hover:bg-purple-700"
+                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:w-auto`}
+                >
+                  {isPending ? " Updating..." : "Update"}
+                </button>
+              ) : (
+                <button
+                  disabled={isPending || mode ? true : false}
+                  type="submit"
+                  className={`mt-2 w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
+                    isPending
+                      ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
+                      : "bg-purple-600 hover:bg-purple-700"
+                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:w-auto`}
+                >
+                  {isPending ? "Saving..." : "Save"}
+                </button>
+              )}
+            </div>
+          )}
+        </form>
+      </div>
+    </Suspense>
   );
 };
 

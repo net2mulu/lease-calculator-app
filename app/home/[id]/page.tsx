@@ -1,12 +1,8 @@
 "use client";
-import { LeaseCalculationResult } from "@/types/lease";
 import React, { useState } from "react";
-import LeaseForm from "@/components/Home/LeaseForm";
-import LeaseInfo from "@/components/Home/LeaseInfo";
+import EditWrapper from "@/components/Home/EditWrapper";
 
 const page = ({ params }: { params: { id: string } }) => {
-  const [leaseInfo, setLeaseInfo] = useState<LeaseCalculationResult>();
-
   return (
     <>
       <div className="relative bg-white">
@@ -14,8 +10,7 @@ const page = ({ params }: { params: { id: string } }) => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3">
           {/* Lease information */}
-          <LeaseInfo leaseInfo={leaseInfo} />
-          <LeaseForm id={params.id} setLeaseInfo={setLeaseInfo} />
+          <EditWrapper id={params.id} />
         </div>
       </div>
     </>
