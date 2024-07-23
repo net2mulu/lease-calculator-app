@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "@/utils/providers";
+import DeleteModal from "@/components/Home/DeleteModal";
+import ShareModal from "@/components/Home/ShareModal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,8 +39,12 @@ export default function RootLayout({
         />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className={inter.className}>
-        <Providers>{children}</Providers>
+      <body className={inter.className + " " + `bg-white`}>
+        <Providers>
+          <DeleteModal />
+          <ShareModal />
+          {children}
+        </Providers>
       </body>
     </html>
   );

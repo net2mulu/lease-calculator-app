@@ -45,12 +45,16 @@ model Lease {
   user               User          @relation(fields: [userId], references: [id])
   userId             String
   SharedLease        SharedLease[]
+  created_at         DateTime      @default(now())
+  updated_at         DateTime      @updatedAt
 }
 
 model SharedLease {
-  id      String @id @default(cuid())
-  leaseId String
-  userId  String
-  lease   Lease  @relation(fields: [leaseId], references: [id])
-  user    User   @relation(fields: [userId], references: [id])
+  id         String   @id @default(cuid())
+  leaseId    String
+  userId     String
+  lease      Lease    @relation(fields: [leaseId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }

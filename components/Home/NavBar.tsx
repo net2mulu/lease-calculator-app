@@ -4,8 +4,8 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { FiAlignJustify, FiXSquare } from "react-icons/fi";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const navigation = [
   { name: "My Leases", href: "/home", current: true },
@@ -47,7 +47,7 @@ const NavBar = () => {
                         key={item.name}
                         href={item.href}
                         className={classNames(
-                          pathname === item.href
+                          pathname.includes(item.href)
                             ? "bg-purple-400 text-white"
                             : "text-white hover:bg-purple-500 hover:bg-opacity-75",
                           "rounded-md py-2 px-3 text-sm font-medium"
@@ -79,8 +79,8 @@ const NavBar = () => {
                 <div className="flex items-center">
                   <Menu as="div" className="ml-3 relative flex-shrink-0">
                     <div>
-                      <Menu.Button className="bg-purple-600 rounded-full flex text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-purple-600 focus:ring-white">
-                        <span className="sr-only">Open user menu</span>
+                      <Menu.Button className="bg-purple-600 rounded-full flex items-center pl-2 gap-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-purple-600 focus:ring-white">
+                        <span className="">{session?.user?.email}</span>
                         <div className="inline-flex justify-center items-center bg-gray-400 border-2 border-white rounded-full h-10 w-10">
                           {session?.user?.username?.charAt(0).toUpperCase()}
                         </div>
