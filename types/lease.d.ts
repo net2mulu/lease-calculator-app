@@ -1,4 +1,5 @@
-import { User } from "@prisma/client";
+import { Lease, User } from "@prisma/client";
+import { string } from "zod";
 
 export interface LeaseCalculationResult {
   leaseDurationMonths: number;
@@ -33,4 +34,13 @@ export interface ModalContentProps {
   title: string;
   desc: string;
   callback: () => void;
+}
+
+export interface SharedLeaseData {
+  id: string;
+  leaseId: string;
+  userId: string;
+  created_at: string;
+  updated_at: string;
+  lease: LeaseData;
 }

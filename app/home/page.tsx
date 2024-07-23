@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
-import { GetLeases } from "../_actions";
+import { GetLeases } from "@/app/_actions";
 import { LeaseData } from "@/types/lease";
 
 const page = async () => {
@@ -36,7 +36,7 @@ const page = async () => {
 
           {(data as LeaseData[]).length === 0 ? (
             <div className="h-[50vh] w-full flex justify-center items-center">
-              <p className="text-purple-400 font-bold text-3xl">
+              <p className="text-purple-400 font-normal text-xl">
                 No leases yet!
               </p>
             </div>

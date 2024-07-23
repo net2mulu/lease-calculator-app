@@ -16,6 +16,7 @@ export default function DeleteModal() {
   const { mutate: deleteLease, isPending } = useMutation({
     mutationFn: (val: string) => DeleteLease(val),
     onError: (error) => {
+      console.log(error);
       toast.error("Failed to Deleted lease");
     },
 

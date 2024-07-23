@@ -4,19 +4,22 @@ import { DateTime } from "luxon";
 import { LeaseData } from "@/types/lease";
 import { calculateLease, getDurationInMonths } from "@/utils/leaseFunc";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const LeaseCard = ({ data }: { data: LeaseData }) => {
+  const { data: session } = useSession();
+
   const res = calculateLease(
     data.startDate.toString(),
     data.endDate.toString(),
-    data.monthlyRent,
-    data.securityDeposit,
-    data.additionalCharges,
-    data.annualRentIncrease,
+    +data.monthlyRent,
+    +data.securityDeposit,
+    +data.additionalCharges,
+    +data.annualRentIncrease,
     data.leaseType,
     data.utilitiesIncluded,
-    data.maintenanceFees,
-    data.latePaymentPenalty
+    +data.maintenanceFees,
+    +data.latePaymentPenalty
   );
 
   return (
@@ -27,6 +30,11 @@ const LeaseCard = ({ data }: { data: LeaseData }) => {
             <h3 className="text-gray-900 text-sm font-medium truncate">
               {data.user.username}
             </h3>
+            {session?.user.id === data.user.id && (
+              <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded ">
+                Your lease
+              </span>
+            )}
           </div>
           <p className="mt-1 text-gray-500 text-sm truncate">
             {data.user.email}
@@ -73,30 +81,43 @@ const LeaseCard = ({ data }: { data: LeaseData }) => {
       </div>
       <div>
         <div className=" flex divide-x divide-gray-200">
-          <div className="w-0 flex-1 flex cursor-pointer">
-            <Link
-              href={`/home/${data.id}`}
-              className="relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-purple-500"
-            >
-              <span className="ml-3">Update</span>
-            </Link>
-          </div>
-          <div className="-ml-px w-0 flex-1 flex cursor-pointer">
-            <Link
-              href={`?share=${data.id}`}
-              className="relative w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-gray-700 font-medium border border-transparent rounded-br-lg hover:text-purple-500"
-            >
-              <span className="ml-3">Share</span>
-            </Link>
-          </div>
-          <div className="-ml-px w-0 flex-1 flex cursor-pointer">
-            <Link
-              href={`?delete=${data.id}`}
-              className="relative w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-gray-700 font-medium border border-transparent rounded-br-lg hover:text-red-500"
-            >
-              <span className="ml-3">Delete</span>
-            </Link>
-          </div>
+          {session?.user.id === data.userId ? (
+            <>
+              <div className="w-0 flex-1 flex cursor-pointer">
+                <Link
+                  href={`/home/${data.id}`}
+                  className="relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-purple-500"
+                >
+                  <span className="ml-3">Update</span>
+                </Link>
+              </div>
+              <div className="-ml-px w-0 flex-1 flex cursor-pointer">
+                <Link
+                  href={`?share=${data.id}`}
+                  className="relative w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-gray-700 font-medium border border-transparent rounded-br-lg hover:text-purple-500"
+                >
+                  <span className="ml-3">Share</span>
+                </Link>
+              </div>
+              <div className="-ml-px w-0 flex-1 flex cursor-pointer">
+                <Link
+                  href={`?delete=${data.id}`}
+                  className="relative w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-gray-700 font-medium border border-transparent rounded-br-lg hover:text-red-500"
+                >
+                  <span className="ml-3">Delete</span>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="w-0 flex-1 flex cursor-pointer">
+              <Link
+                href={`/home/${data.id}?mode=view`}
+                className="relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-2 text-sm text-gray-700 font-medium border border-transparent rounded-bl-lg hover:text-purple-500"
+              >
+                <span className="ml-3">View</span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </li>

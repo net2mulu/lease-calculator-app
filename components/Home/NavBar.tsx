@@ -8,8 +8,9 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const navigation = [
-  { name: "My Leases", href: "/home", current: true },
-  { name: "Shared Leases", href: "/home/shared", current: false },
+  { name: "All Leases", href: "/home" },
+  { name: "My Leases", href: "/home/my" },
+  { name: "Shared Leases", href: "/home/shared" },
 ];
 const userNavigation = [{ name: "Sign out", href: "#", callBack: signOut }];
 
@@ -47,12 +48,12 @@ const NavBar = () => {
                         key={item.name}
                         href={item.href}
                         className={classNames(
-                          pathname.includes(item.href)
+                          pathname === item.href
                             ? "bg-purple-400 text-white"
                             : "text-white hover:bg-purple-500 hover:bg-opacity-75",
                           "rounded-md py-2 px-3 text-sm font-medium"
                         )}
-                        aria-current={item.current ? "page" : undefined}
+                        aria-current="page"
                       >
                         {item.name}
                       </Link>
@@ -126,13 +127,8 @@ const NavBar = () => {
                   key={item.name}
                   as="a"
                   href={item.href}
-                  className={classNames(
-                    item.current
-                      ? "bg-purple-700 text-white"
-                      : "text-white hover:bg-purple-500 hover:bg-opacity-75",
-                    "block rounded-md py-2 px-3 text-base font-medium"
-                  )}
-                  aria-current={item.current ? "page" : undefined}
+                  className="text-white hover:bg-purple-500 hover:bg-opacity-75block rounded-md py-2 px-3 text-base font-medium"
+                  aria-current="page"
                 >
                   {item.name}
                 </Disclosure.Button>

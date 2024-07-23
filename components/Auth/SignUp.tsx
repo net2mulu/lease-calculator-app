@@ -5,6 +5,8 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 
 const FormSchema = z
   .object({
@@ -42,28 +44,41 @@ const SignUp = (props: SignUpProps) => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    const response = await fetch("/api/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+  const signUp = async (values: z.infer<typeof FormSchema>) => {
+    try {
+      const response = await axios.post("/api/user", {
         username: values.username,
         email: values.email,
         password: values.password,
-      }),
-    });
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      toast.success(data.message);
-      setShowSignIn(true);
-      return;
-    } else {
-      const data = await response.json();
-      toast.error(data.message);
+      return response.data;
+    } catch (error) {
+      return { error: true, message: "Failed to register user" };
     }
+  };
+
+  const { mutate: registerUser, isPending } = useMutation({
+    mutationFn: (val: z.infer<typeof FormSchema>) => signUp(val),
+    onError: (error) => {
+      toast.error("Failed to register user");
+    },
+
+    onSuccess: (data) => {
+      if (data?.status === 409) {
+        toast.error(data.message);
+      } else {
+        toast.success(data.message);
+        setShowSignIn(true);
+        router.refresh();
+      }
+      console.log(data);
+      // router.push("/auth");
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    registerUser(values);
   };
 
   return (
@@ -79,6 +94,7 @@ const SignUp = (props: SignUpProps) => {
             </label>
             <div className="mt-1">
               <input
+                disabled={isPending}
                 id="username"
                 {...register("username")}
                 type="text"
@@ -103,6 +119,7 @@ const SignUp = (props: SignUpProps) => {
             </label>
             <div className="mt-1">
               <input
+                disabled={isPending}
                 id="email"
                 placeholder="Your email"
                 {...register("email")}
@@ -126,6 +143,7 @@ const SignUp = (props: SignUpProps) => {
             </label>
             <div className="mt-1">
               <input
+                disabled={isPending}
                 id="password"
                 placeholder="Your password"
                 {...register("password")}
@@ -150,6 +168,7 @@ const SignUp = (props: SignUpProps) => {
             </label>
             <div className="mt-1">
               <input
+                disabled={isPending}
                 id="confirm-password"
                 placeholder="Confirm your password"
                 {...register("confirmPassword")}
@@ -170,7 +189,7 @@ const SignUp = (props: SignUpProps) => {
               type="submit"
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Sign in
+              {isPending ? "Loading..." : "Sign in"}
             </button>
           </div>
         </form>

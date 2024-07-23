@@ -55,9 +55,26 @@ export async function GetLeases() {
   }
 
   const leases = await db.lease.findMany({
+    include: {
+      user: true,
+    },
+  });
+
+  return leases;
+}
+
+export async function GetMyLeases() {
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const leases = await db.lease.findMany({
     where: {
       userId: session.user.id,
     },
+
     include: {
       user: true,
     },
@@ -102,7 +119,7 @@ export async function DeleteLease(id: string) {
   });
 
   if (!lease) {
-    return lease;
+    return "lease not found";
   }
 
   if (lease.userId !== session.user.id) {
@@ -171,6 +188,11 @@ export async function ShareLease(id: string, email: string) {
     return { error: true, message: "User not found" };
   }
 
+  //disallow share to self
+  if (user.id === session.user.id) {
+    return { error: true, message: "Can not share to self" };
+  }
+
   const lease = await db.lease.findUnique({
     where: {
       id,
@@ -195,7 +217,7 @@ export async function ShareLease(id: string, email: string) {
   return shareLink;
 }
 
-export async function GetSharedLease() {
+export async function GetSharedLeases() {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
@@ -207,7 +229,11 @@ export async function GetSharedLease() {
       userId: session.user.id,
     },
     include: {
-      lease: true,
+      lease: {
+        include: {
+          user: true,
+        },
+      },
       user: true,
     },
   });

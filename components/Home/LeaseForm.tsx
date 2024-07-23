@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetLeaseById, SaveLease, UpdateLease } from "@/app/_actions";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { calculateLease } from "@/utils/leaseFunc";
 import { LeaseData } from "@/types/lease";
 
@@ -65,6 +65,9 @@ const LeaseForm = ({
       latePaymentPenalty: 10,
     },
   });
+
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode");
 
   const router = useRouter();
   const { mutate: createLease, isPending } = useMutation({
@@ -231,7 +234,7 @@ const LeaseForm = ({
           </label>
           <div className="mt-1">
             <input
-              disabled={isPending}
+              disabled={isPending || mode ? true : false}
               type="date"
               {...register("startDate")}
               id="start-date"
@@ -254,7 +257,7 @@ const LeaseForm = ({
           </label>
           <div className="mt-1">
             <input
-              disabled={isPending}
+              disabled={isPending || mode ? true : false}
               type="date"
               {...register("endDate")}
               id="end-date"
@@ -277,7 +280,7 @@ const LeaseForm = ({
           </label>
           <div className="mt-1">
             <input
-              disabled={isPending}
+              disabled={isPending || mode ? true : false}
               type="number"
               min={0}
               {...register("monthlyRent")}
@@ -301,7 +304,7 @@ const LeaseForm = ({
           </label>
           <div className="mt-1">
             <input
-              disabled={isPending}
+              disabled={isPending || mode ? true : false}
               type="number"
               min={0}
               {...register("securityDeposit")}
@@ -325,7 +328,7 @@ const LeaseForm = ({
           </label>
           <div className="mt-1">
             <input
-              disabled={isPending}
+              disabled={isPending || mode ? true : false}
               type="number"
               min={0}
               {...register("additionalCharges")}
@@ -349,7 +352,7 @@ const LeaseForm = ({
           </label>
           <div className="mt-1">
             <input
-              disabled={isPending}
+              disabled={isPending || mode ? true : false}
               type="number"
               min={0}
               {...register("annualRentIncrease")}
@@ -397,7 +400,7 @@ const LeaseForm = ({
           </label>
           <div className="mt-1">
             <input
-              disabled={isPending}
+              disabled={isPending || mode ? true : false}
               type="checkbox"
               {...register("utilitiesIncluded")}
               id="utilities-included"
@@ -420,7 +423,7 @@ const LeaseForm = ({
           </label>
           <div className="mt-1">
             <input
-              disabled={isPending}
+              disabled={isPending || mode ? true : false}
               type="number"
               min={0}
               {...register("maintenanceFees")}
@@ -459,33 +462,35 @@ const LeaseForm = ({
           </div>
         </div>
 
-        <div className="sm:col-span-2 sm:flex sm:justify-end">
-          {id ? (
-            <button
-              disabled={isPending}
-              type="submit"
-              className={`mt-2 w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
-                isPending
-                  ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
-                  : "bg-purple-600 hover:bg-purple-700"
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:w-auto`}
-            >
-              {isPending ? " Updating..." : "Update"}
-            </button>
-          ) : (
-            <button
-              disabled={isPending}
-              type="submit"
-              className={`mt-2 w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
-                isPending
-                  ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
-                  : "bg-purple-600 hover:bg-purple-700"
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:w-auto`}
-            >
-              {isPending ? "Saving..." : "Save"}
-            </button>
-          )}
-        </div>
+        {!mode && (
+          <div className="sm:col-span-2 sm:flex sm:justify-end">
+            {id ? (
+              <button
+                disabled={isPending || mode ? true : false}
+                type="submit"
+                className={`mt-2 w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
+                  isPending
+                    ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
+                    : "bg-purple-600 hover:bg-purple-700"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:w-auto`}
+              >
+                {isPending ? " Updating..." : "Update"}
+              </button>
+            ) : (
+              <button
+                disabled={isPending || mode ? true : false}
+                type="submit"
+                className={`mt-2 w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
+                  isPending
+                    ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
+                    : "bg-purple-600 hover:bg-purple-700"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:w-auto`}
+              >
+                {isPending ? "Saving..." : "Save"}
+              </button>
+            )}
+          </div>
+        )}
       </form>
     </div>
   );
