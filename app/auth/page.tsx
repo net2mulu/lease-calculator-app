@@ -65,7 +65,7 @@ export default function Auth() {
                       Or{" "}
                       <a
                         href="#"
-                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                        className="font-medium text-purple-600 hover:text-purple-500"
                         onClick={toggleAuth}
                       >
                         Sign up here
@@ -76,7 +76,7 @@ export default function Auth() {
                       Or{" "}
                       <a
                         href="#"
-                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                        className="font-medium text-purple-600 hover:text-purple-500"
                         onClick={toggleAuth}
                       >
                         Sign in to your account

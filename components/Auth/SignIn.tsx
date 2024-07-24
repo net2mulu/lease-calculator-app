@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const FormSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email"),
@@ -30,18 +31,30 @@ const SignIn = (props: SignInProps) => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    const authData = await signIn("credentials", {
-      email: values.email,
-      password: values.password,
-      redirect: false,
-    });
+  const { mutate: signin, isPending } = useMutation({
+    mutationFn: (val: { password: string; email: string }) =>
+      signIn("credentials", {
+        email: val.email,
+        password: val.password,
+        redirect: false,
+      }),
+    onError: (error) => {
+      toast.error("Failed to login!");
+    },
 
-    if (authData?.error) {
-      toast.error("Invalid credentials");
-    } else {
+    onSuccess: (data) => {
+      if (data && data.error) {
+        toast.error("Failed to login!");
+        return;
+      }
+
+      toast.success("Signed in successfully");
       router.push("/home");
-    }
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    signin(values);
   };
 
   return (
@@ -57,11 +70,12 @@ const SignIn = (props: SignInProps) => {
             </label>
             <div className="mt-1">
               <input
+              disabled={isPending}
                 id="email"
                 placeholder="Your email"
                 {...register("email")}
                 type="text"
-                className="appearance-none text-purple-600 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="appearance-none text-purple-600 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
               />
             </div>
             {errors.email && (
@@ -80,12 +94,13 @@ const SignIn = (props: SignInProps) => {
             </label>
             <div className="mt-1">
               <input
+              disabled={isPending}
                 id="password"
                 placeholder="Your password"
                 {...register("password")}
                 type="password"
                 autoComplete="current-password"
-                className="appearance-none text-purple-600 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="appearance-none text-purple-600 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
               />
             </div>
             {errors.password && (
@@ -98,9 +113,8 @@ const SignIn = (props: SignInProps) => {
           <div>
             <button
               type="submit"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Sign in
+              className={`${!isPending ? "bg-purple-600 hover:bg-purple-700 " : "bg-gray-200 text-purple-700"} w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium`} >
+             {isPending?"Signing in...":"Sign in"}
             </button>
           </div>
         </form>
