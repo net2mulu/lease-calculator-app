@@ -11,7 +11,7 @@ export default function Home() {
             <div>
               <Image
                 className="h-12 w-auto"
-                src="/images/logo.png"
+                src="/logo.png"
                 alt="logo"
                 width={48}
                 height={48}
@@ -102,7 +102,7 @@ export default function Home() {
             <div className="relative pl-4 -mr-40 sm:mx-auto sm:max-w-3xl sm:px-0 lg:max-w-none lg:h-full lg:pl-12">
               <Image
                 className="w-full rounded-md shadow-xl ring-1 ring-black ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none"
-                src="/images/lease-demo.png"
+                src="/lease-demo.png"
                 alt=""
                 width={500}
                 height={462}

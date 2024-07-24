@@ -35,7 +35,7 @@ const NavBar = () => {
                 <div className="flex-shrink-0">
                   <Image
                     className="h-12 w-auto border border-white rounded-full"
-                    src="/images/logo.png"
+                    src="/logo.png"
                     alt="logo"
                     width={48}
                     height={48}

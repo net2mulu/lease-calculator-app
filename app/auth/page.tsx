@@ -51,7 +51,7 @@ export default function Auth() {
               <div>
                 <Image
                   className="h-12 w-auto"
-                  src="/images/logo.png"
+                  src="/logo.png"
                   alt="logo"
                   width={48}
                   height={48}
@@ -117,7 +117,7 @@ export default function Auth() {
         <div className="hidden lg:block relative w-0 flex-1">
           <Image
             className="absolute inset-0 h-full w-full object-cover"
-            src="/images/bcd.jpg"
+            src="/bcd.jpg"
             alt=""
             layout="fill"
           />

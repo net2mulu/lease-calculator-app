@@ -24,7 +24,7 @@ const page = async () => {
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8">
         <div className="">
-          {(data as LeaseData[])?.length === 0 ? (
+          {!data? (
             <div className="h-[50vh] w-full flex justify-center items-center">
               <p className="text-purple-400 font-normal text-xl">
                 No Shared leases yet!

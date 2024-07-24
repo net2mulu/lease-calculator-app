@@ -1,5 +1,4 @@
 import LeaseCard from "@/components/Home/LeaseCard";
-import LoaderCard from "@/components/Home/LoaderCard";
 import {
   dehydrate,
   HydrationBoundary,
@@ -34,7 +33,7 @@ const page = async () => {
             </Link>
           </div>
 
-          {(data as LeaseData[]).length === 0 ? (
+          {!data ? (
             <div className="h-[50vh] w-full flex justify-center items-center">
               <p className="text-purple-400 font-normal text-xl">
                 No leases yet!
