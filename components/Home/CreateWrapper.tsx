@@ -8,10 +8,10 @@ const CreateWrapper = () => {
   const [leaseInfo, setLeaseInfo] = useState<LeaseCalculationResult>();
 
   return (
-    <div>
+    <>
       <LeaseInfo leaseInfo={leaseInfo} />
       <LeaseForm setLeaseInfo={setLeaseInfo} />
-    </div>
+    </>
   );
 };
 
